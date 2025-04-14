@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  biat_mysql:
+    image: mysql:8.0
+    container_name: biat_mysql
+    restart: always
+    ports:
+      - "3327:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: survey_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    networks:
+      - biat_net
+
+  biat_adminer:
+    image: adminer
+    container_name: biat_adminer
+    restart: always
+    ports:
+      - "34784:8080"
+    networks:
+      - biat_net
+
+networks:
+  biat_net:
