@@ -32,6 +32,17 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public Optional<User> updateUser(UUID id, User updatedUser) {
+        return userRepository.findById(id).map(existingUser -> {
+            existingUser.setFirstName(updatedUser.getFirstName());
+            existingUser.setLastName(updatedUser.getLastName());
+            existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setRole(updatedUser.getRole());
+            return userRepository.save(existingUser);
+        });
+    }
+
+
     public void deleteById(UUID id) {
         userRepository.deleteById(id);
     }

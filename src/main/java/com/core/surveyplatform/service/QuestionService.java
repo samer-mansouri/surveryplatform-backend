@@ -27,4 +27,8 @@ public class QuestionService {
     public List<Question> findBySurvey(Survey survey) {
         return questionRepository.findBySurvey(survey);
     }
+
+    public void deleteById(UUID id) {
+        questionRepository.deleteById(id);
+    }
 }

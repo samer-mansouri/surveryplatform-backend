@@ -33,6 +33,15 @@ class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable UUID id, @RequestBody User updatedUser) {
+        return userService.updateUser(id, updatedUser)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
         userService.deleteById(id);

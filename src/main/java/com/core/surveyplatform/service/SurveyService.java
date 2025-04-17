@@ -31,4 +31,8 @@ public class SurveyService {
     public List<Survey> findAll() {
         return surveyRepository.findAll();
     }
+
+    public void deleteById(UUID id) {
+        surveyRepository.deleteById(id);
+    }
 }

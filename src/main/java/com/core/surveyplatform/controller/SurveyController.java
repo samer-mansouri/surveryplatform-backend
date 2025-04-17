@@ -18,7 +18,7 @@ class SurveyController {
     private final SurveyService surveyService;
     private final UserService userService;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<?> createSurvey(@RequestBody Survey survey, @RequestParam UUID creatorId) {
         Optional<User> user = userService.findById(creatorId);
@@ -49,5 +49,29 @@ class SurveyController {
                 .map(surveyService::findByCreator)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
+    }
+
+    // ✅ Update a survey
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateSurvey(@PathVariable UUID id, @RequestBody Survey updatedSurvey) {
+        return surveyService.findById(id).map(existingSurvey -> {
+            existingSurvey.setTitle(updatedSurvey.getTitle());
+            existingSurvey.setDescription(updatedSurvey.getDescription());
+            existingSurvey.setStartDate(updatedSurvey.getStartDate());
+            existingSurvey.setEndDate(updatedSurvey.getEndDate());
+            return ResponseEntity.ok(surveyService.save(existingSurvey));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    // ✅ Delete a survey
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteSurvey(@PathVariable UUID id) {
+        if (surveyService.findById(id).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        surveyService.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 }

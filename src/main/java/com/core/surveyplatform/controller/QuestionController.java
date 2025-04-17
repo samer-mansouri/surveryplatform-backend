@@ -36,5 +36,27 @@ class QuestionController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-}
 
+    // ✅ Mise à jour d'une question
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateQuestion(@PathVariable UUID id, @RequestBody Question updatedQuestion) {
+        return questionService.findById(id).map(existingQuestion -> {
+            existingQuestion.setText(updatedQuestion.getText());
+            existingQuestion.setType(updatedQuestion.getType());
+            existingQuestion.setOptions(updatedQuestion.getOptions());
+            return ResponseEntity.ok(questionService.save(existingQuestion));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    // ✅ Suppression d'une question
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteQuestion(@PathVariable UUID id) {
+        if (questionService.findById(id).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        questionService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+}
