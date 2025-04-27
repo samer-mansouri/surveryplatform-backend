@@ -1,5 +1,6 @@
 package com.core.surveyplatform.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -24,9 +25,7 @@ public class Survey {
 
     private LocalDateTime endDate;
 
-    @ManyToOne
-    private User creator;
-
     @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Question> questions = new ArrayList<>();
 }

@@ -5,6 +5,7 @@ import com.core.surveyplatform.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -21,17 +22,24 @@ class AnswerController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/submit")
-    public ResponseEntity<?> submitAnswer(@RequestBody Answer answer, @RequestParam UUID questionId, @RequestParam(required = false) UUID userId) {
+    public ResponseEntity<?> submitAnswer(@RequestBody Answer answer, @RequestParam UUID questionId) {
         Optional<Question> question = questionService.findById(questionId);
-        if (question.isEmpty()) return ResponseEntity.badRequest().body("Invalid question ID");
-
-        answer.setQuestion(question.get());
-        if (userId != null) {
-            userService.findById(userId).ifPresent(answer::setUser);
+        if (question.isEmpty()) {
+            return ResponseEntity.badRequest().body("Invalid question ID");
         }
+
+        // Set the question
+        answer.setQuestion(question.get());
+
+        // 👇 Extract email from JWT (already placed in SecurityContext by JwtAuthenticationFilter)
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        // Find user by email and set it to the answer
+        userService.findByEmail(email).ifPresent(answer::setUser);
 
         return ResponseEntity.ok(answerService.save(answer));
     }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/question/{questionId}")

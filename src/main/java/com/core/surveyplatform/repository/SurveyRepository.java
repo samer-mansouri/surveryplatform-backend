@@ -8,5 +8,4 @@ import java.util.List;
 import java.util.UUID;
 
 public interface SurveyRepository extends JpaRepository<Survey, UUID> {
-    List<Survey> findByCreator(User creator);
 }

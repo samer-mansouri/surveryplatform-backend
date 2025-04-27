@@ -20,11 +20,12 @@ class SurveyController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
-    public ResponseEntity<?> createSurvey(@RequestBody Survey survey, @RequestParam UUID creatorId) {
-        Optional<User> user = userService.findById(creatorId);
-        if (user.isEmpty()) return ResponseEntity.badRequest().body("Invalid user ID");
-
-        survey.setCreator(user.get());
+    //public ResponseEntity<?> createSurvey(@RequestBody Survey survey, @RequestParam UUID creatorId) {
+    public ResponseEntity<?> createSurvey(@RequestBody Survey survey) {
+//        Optional<User> user = userService.findById(creatorId);
+//        if (user.isEmpty()) return ResponseEntity.badRequest().body("Invalid user ID");
+//
+//        survey.setCreator(user.get());
         return ResponseEntity.ok(surveyService.save(survey));
     }
 
@@ -42,14 +43,14 @@ class SurveyController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @GetMapping("/creator/{creatorId}")
-    public ResponseEntity<?> getByCreator(@PathVariable UUID creatorId) {
-        return userService.findById(creatorId)
-                .map(surveyService::findByCreator)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.badRequest().build());
-    }
+//    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+//    @GetMapping("/creator/{creatorId}")
+//    public ResponseEntity<?> getByCreator(@PathVariable UUID creatorId) {
+//        return userService.findById(creatorId)
+//                .map(surveyService::findByCreator)
+//                .map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.badRequest().build());
+//    }
 
     // ✅ Update a survey
     @PreAuthorize("hasRole('ADMIN')")

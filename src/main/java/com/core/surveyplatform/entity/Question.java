@@ -1,6 +1,7 @@
 package com.core.surveyplatform.entity;
 
-import com.core.surveyplatform.entity.enums.QuestionType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.*;
@@ -18,15 +19,11 @@ public class Question {
 
     private String text;
 
-    @Enumerated(EnumType.STRING)
-    private QuestionType type;
-
-    @ElementCollection
-    private List<String> options;
-
     @ManyToOne
+    @JsonBackReference
     private Survey survey;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Answer> answers = new ArrayList<>();
 }

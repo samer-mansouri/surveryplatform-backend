@@ -1,5 +1,6 @@
 package com.core.surveyplatform.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -17,10 +18,11 @@ public class Answer {
     private UUID id;
 
     @ManyToOne
+    @JsonBackReference
     private Question question;
 
     @ManyToOne
-    private User user; // Peut être null si réponse anonyme
+    private User user;
 
     private String value;
 
