@@ -18,7 +18,7 @@ class QuestionController {
     private final QuestionService questionService;
     private final SurveyService surveyService;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<?> addQuestion(@RequestBody Question question, @RequestParam UUID surveyId) {
         Optional<Survey> survey = surveyService.findById(surveyId);
@@ -37,19 +37,16 @@ class QuestionController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // ✅ Mise à jour d'une question
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateQuestion(@PathVariable UUID id, @RequestBody Question updatedQuestion) {
         return questionService.findById(id).map(existingQuestion -> {
             existingQuestion.setText(updatedQuestion.getText());
-            existingQuestion.setType(updatedQuestion.getType());
-            existingQuestion.setOptions(updatedQuestion.getOptions());
             return ResponseEntity.ok(questionService.save(existingQuestion));
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    // ✅ Suppression d'une question
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteQuestion(@PathVariable UUID id) {

@@ -24,10 +24,6 @@ public class SurveyService {
         return surveyRepository.findById(id);
     }
 
-    public List<Survey> findByCreator(User user) {
-        return surveyRepository.findByCreator(user);
-    }
-
     public List<Survey> findAll() {
         return surveyRepository.findAll();
     }
